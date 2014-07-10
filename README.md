@@ -8,7 +8,7 @@ Optionally, the constructor can be passed a `sync` argument, representing a cust
 
 * **ctor([sync])**: This constructor optionally accepts a `sync` function, to be used in place of `requestAnimationFrame`. `sync` should accept a callback parameter, representing the job to be executed.
 
-* **Batch.prototype.queue(fn)**: Add a job to the batch queue. The job will be executed in the next animation frame.  
+* **Batch.prototype.queue(fn)**: Enqueue a job. `fn` will be executed in the next animation frame.  
 
 ```javascript
 var batch = new Batch();
@@ -23,7 +23,7 @@ batch.queue(hello2);
 // => hello again
 ```
 
-* **Batch.prototype.add(fn)**: Returns a `queue` function. When `queue` is called, `fn` will be added to the batch queue, and when `fn` is executed, any arguments passed to `queue` will be passed on to `fn`.  
+* **Batch.prototype.add(fn)**: Returns a `queue` function. When this function is called, `fn` will be enqueued. When `fn` is executed, any arguments passed to `queue` will be passed on to `fn`.  
 
 ```javascript
 var batch = new Batch();
@@ -40,6 +40,8 @@ qHouse('small bungalow');
 // => My car is a Toyota Corolla.
 // => My house is a small bungalow.
 
+qCar('Peugot');
+// => My car is a Peugot.
 ```
 
 ### Known Issues
