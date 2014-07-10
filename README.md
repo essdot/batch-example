@@ -69,12 +69,16 @@ qCool.call(coolItem);
 // => Yep, this is cool.
 ```
 
-* The same instance of the `queue` function returned by `Batch.prototype.add(fn)` can only add one job per frame. If this function is called more than once per frame, the last invocation wins and the previous invocations do nothing. When the job is executing, the parameters passed to the most-recent invocation of `queue` will be the parameters passed to `fn`.
+* An instance of the `queue` function returned by `Batch.prototype.add(fn)` can only add one job per frame. If this function is called more than once per frame, the last invocation wins and the previous invocations do nothing. When the job is executing, `fn` will receive the parameters passed to the most-recent invocation of `queue`:
 
 ```javascript
 qCool.call(coolItem); qCool.call(coolItem); qCool();
 
 // => Nope, this ain't cool.
+
+qCar('Audi TT'); qCar('Ford Pinto');
+
+// => My car is a Ford Pinto.
 ```
 
 * If the Batch object has a `sync` function defined, any jobs in the queue will not be executed. The `sync` function will never be invoked.
