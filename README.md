@@ -1,6 +1,6 @@
 # Batch
 
-This class batches updates, then executes them using `requestAnimationFrame`. If `requestAnimationFrame` is not available, `setTimeout` will be used instead, with a 60fps timeout. When the frame occurs, all queued jobs will be executed in order.
+This class batches jobs, then executes them using `requestAnimationFrame`. If `requestAnimationFrame` is not available, `setTimeout` will be used instead, with a 60fps timeout. When the frame occurs, all queued jobs will be executed in order.
 
 Optionally, the constructor can be passed a `sync` argument, representing a custom sync function to be used instead of `requestAnimationFrame`.
 
@@ -44,13 +44,15 @@ qHouse('small bungalow');
 
 ### Known Issues
 
-* Jobs added via `Batch.prototype.add(fn)` will execute in the global context, not the context of the Batch object. Inside `fn`, `this` will refer to the global object. To work around this, call the `queue` function returned by `Batch.prototype.add(fn)` in the context you would like `fn` to have:
+* Jobs added with the `queue` function returned by `Batch.prototype.add(fn)` will execute in the global context, not the context of the Batch object. Inside `fn`, `this` will refer to the global object.  
+
+To work around this, call the `queue` function returned by `Batch.prototype.add(fn)` in the context you would like `fn` to have:
 
 ```javascript
 var batch = new Batch();
 
 var coolItem = { isCool: true };
-var isCool = function() { 
+var isItCool = function() { 
 	if(this.isCool === true) {
 		console.log("Yep, this is cool."); 
 	} else {
@@ -58,7 +60,7 @@ var isCool = function() {
 	}
 };
 
-var qCool = batch.add(isCool);
+var qCool = batch.add(isItCool);
 
 qCool();
 
