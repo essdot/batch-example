@@ -49,7 +49,7 @@ qHouse('small bungalow');
 ```javascript
 var batch = new Batch();
 
-var item = { isCool: true };
+var coolItem = { isCool: true };
 var isCool = function() { 
 	if(this.isCool === true) {
 		console.log("Yep, this is cool."); 
@@ -64,7 +64,7 @@ qCool();
 
 // => Nope, this ain't cool.
 
-qCool.call(item);
+qCool.call(coolItem);
 
 // => Yep, this is cool.
 ```
@@ -72,7 +72,7 @@ qCool.call(item);
 * The same instance of the `queue` function returned by `Batch.prototype.add(fn)` can only add one job per frame. If this function is called more than once per frame, the last invocation wins and the previous invocations do nothing. When the job is executing, the parameters passed to the most-recent invocation of `queue` will be the parameters passed to `fn`.
 
 ```javascript
-qCool.call(item); qCool.call(item); qCool();
+qCool.call(coolItem); qCool.call(coolItem); qCool();
 
 // => Nope, this ain't cool.
 ```
