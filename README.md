@@ -10,8 +10,6 @@ Optionally, the constructor can be passed a `sync` argument, representing a cust
 
 * **Batch.prototype.queue(fn)**: Add a job to the batch queue. The job will be executed in the next animation frame.  
 
-* **Batch.prototype.add(fn)**: Returns a `queue` function. When `queue` is called, *fn* will be added to the batch queue, and when *fn* is executed, any arguments passed to `queue` will be passed on to *fn*.  
-
 ```javascript
 var batch = new Batch();
 
@@ -23,20 +21,60 @@ batch.queue(hello2);
 
 // => hello
 // => hello again
+```
 
-var log = function(s) { console.log(s); }
+* **Batch.prototype.add(fn)**: Returns a `queue` function. When `queue` is called, `fn` will be added to the batch queue, and when `fn` is executed, any arguments passed to `queue` will be passed on to `fn`.  
 
-var q = batch.add(log);
-q('xyz');
-q('123');
+```javascript
+var batch = new Batch();
 
-// => xyz
-// => 123
+var logCar = function(car) { console.log('My car is a ' + car + '.'); }
+var logHouse = function(house) { console.log('My house is a ' + house + '.'); }
+
+var qCar = batch.add(logCar);
+var qHouse = batch.add(logHouse);
+
+qCar('Toyota Corolla');
+qHouse('small bungalow');
+
+// => My car is a Toyota Corolla.
+// => My house is a small bungalow.
 
 ```
 
 ### Known Issues
 
-* `Batch.prototype.add(fn)` will execute *fn* in the global context, not the context of the Batch object. Inside *fn*, `this` will refer to the global object.
+* Jobs added via `Batch.prototype.add(fn)` will execute in the global context, not the context of the Batch object. Inside `fn`, `this` will refer to the global object. To work around this, call the `queue` function returned by `Batch.prototype.add(fn)` in the context you would like `fn` to have:
 
-* `Batch.prototype.queue(fn)` will fail to execute the jobs in the queue if the Batch object has a `sync` function defined.
+```javascript
+var batch = new Batch();
+
+var item = { isCool: true };
+var isCool = function() { 
+	if(this.isCool === true) {
+		console.log("Yep, this is cool."); 
+	} else {
+		console.log("Nope, this ain't cool."); 
+	}
+};
+
+var qCool = batch.add(isCool);
+
+qCool();
+
+// => Nope, this ain't cool.
+
+qCool.call(item);
+
+// => Yep, this is cool.
+```
+
+* The same instance of the `queue` function returned by `Batch.prototype.add(fn)` can only add one job per frame. If this function is called more than once per frame, the last invocation wins and the previous invocations do nothing. When the job is executing, the parameters passed to the most-recent invocation of `queue` will be the parameters passed to `fn`.
+
+```javascript
+qCool.call(item); qCool.call(item); qCool();
+
+// => Nope, this ain't cool.
+```
+
+* If the Batch object has a `sync` function defined, any jobs in the queue will not be executed. The `sync` function will never be invoked.
