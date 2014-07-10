@@ -1,6 +1,8 @@
 # Batch
 
-This class will batch animation updates using `requestAnimationFrame`. If `requestAnimationFrame`, `setTimeout` will be used instead, with a 60fps timeout. Optionally, the constructor can be passed a `sync` argument, representing a custom sync function to be used instead of `requestAnimationFrame`.
+This class batches updates, then executes them using `requestAnimationFrame`. If `requestAnimationFrame` is not available, `setTimeout` will be used instead, with a 60fps timeout. When the frame occurs, all queued jobs will be executed in order.
+
+Optionally, the constructor can be passed a `sync` argument, representing a custom sync function to be used instead of `requestAnimationFrame`.
 
 ## Usage
 
@@ -14,12 +16,22 @@ This class will batch animation updates using `requestAnimationFrame`. If `reque
 var batch = new Batch();
 
 var hello = function() { console.log('hello'); }
+var hello2 = function() { console.log('hello again'); }
+
+batch.queue(hello); 
+batch.queue(hello2); 
+
+// => hello
+// => hello again
+
 var log = function(s) { console.log(s); }
 
-batch.queue(hello); // => 'hello'
+var q = batch.add(log);
+q('xyz');
+q('123');
 
-var q = batch.add(funcz);
-q('hello world') // => 'hello world'
+// => xyz
+// => 123
 
 ```
 
