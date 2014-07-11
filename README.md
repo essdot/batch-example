@@ -2,7 +2,7 @@
 
 This class batches jobs to be executed together via `requestAnimationFrame`. (If `requestAnimationFrame` is not available, `setTimeout` will be used instead, with a 60fps timeout.) The jobs are queued, and executed in order.
 
-Optionally, the constructor can be passed a `sync` argument, representing a custom sync function to be used instead of `requestAnimationFrame`.
+Optionally, another sync function may be used instead of `requestAnimationFrame`.
 
 ## Usage
 
@@ -43,6 +43,12 @@ qHouse('small bungalow');
 qCar('Peugot');
 // => My car is a Peugot.
 ```
+
+### Used Internally
+
+* **Batch.prototype.run()**: Executes queued jobs in order.
+
+* **Batch.prototype.request_frame()**: Calls requestAnimationFrame polyfill and passes `Batch.prototype.run` to requestAnimationFrame.
 
 ### Known Issues
 
