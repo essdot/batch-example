@@ -1,6 +1,6 @@
 # Batch
 
-This class batches jobs, then executes them using `requestAnimationFrame`. (If `requestAnimationFrame` is not available, `setTimeout` will be used instead, with a 60fps timeout.) When the frame occurs, all queued jobs will be executed in order.
+This class batches jobs, then executes them using `requestAnimationFrame`. (If `requestAnimationFrame` is not available, `setTimeout` will be used instead, with a 60fps timeout.) The jobs are queued, and executed in order.
 
 Optionally, the constructor can be passed a `sync` argument, representing a custom sync function to be used instead of `requestAnimationFrame`.
 
@@ -8,7 +8,7 @@ Optionally, the constructor can be passed a `sync` argument, representing a cust
 
 * **ctor([sync])**: This constructor optionally accepts a `sync` function, to be used in place of `requestAnimationFrame`. `sync` should accept a callback parameter, representing the job to be executed.
 
-* **Batch.prototype.queue(fn)**: Enqueue a job. `fn` will be executed in the next animation frame.  
+* **Batch.prototype.queue(fn)**: Enqueue a job. `fn` will be executed before the next animation frame.  
 
 ```javascript
 var batch = new Batch();
