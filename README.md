@@ -48,7 +48,7 @@ qCar('Peugot');
 
 * **Batch.prototype.run()**: Executes queued jobs in order.
 
-* **Batch.prototype.request_frame()**: Calls requestAnimationFrame polyfill and passes `Batch.prototype.run` to requestAnimationFrame.
+* **Batch.prototype.request_frame()**: Calls `requestAnimationFrame` polyfill and passes `Batch.prototype.run` to `requestAnimationFrame` so queued jobs are run before the next frame.
 
 ### Known Issues
 
