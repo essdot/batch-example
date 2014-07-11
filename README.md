@@ -1,12 +1,12 @@
 # Batch
 
-This class batches jobs, then executes them using `requestAnimationFrame`. (If `requestAnimationFrame` is not available, `setTimeout` will be used instead, with a 60fps timeout.) The jobs are queued, and executed in order.
+This class batches jobs to be executed together via `requestAnimationFrame`. (If `requestAnimationFrame` is not available, `setTimeout` will be used instead, with a 60fps timeout.) The jobs are queued, and executed in order.
 
 Optionally, the constructor can be passed a `sync` argument, representing a custom sync function to be used instead of `requestAnimationFrame`.
 
 ## Usage
 
-* **ctor([sync])**: This constructor optionally accepts a `sync` function, to be used in place of `requestAnimationFrame`. `sync` should accept a callback parameter, representing the job to be executed.
+* **ctor([sync])**: This constructor optionally accepts a `sync` function, to be used in place of `requestAnimationFrame`. `sync` should accept a callback parameter, representing the `run` function that executes all queued jobs.
 
 * **Batch.prototype.queue(fn)**: Enqueue a job. `fn` will be executed before the next animation frame.  
 
@@ -23,7 +23,7 @@ batch.queue(hello2);
 // => hello again
 ```
 
-* **Batch.prototype.add(fn)**: Returns a `queue` function. When this function is called, `fn` will be enqueued. When `fn` is executed, any arguments passed to `queue` will be passed on to `fn`.  
+* **Batch.prototype.add(fn)**: Returns a `queue` function. When this function is called, `fn` will be queued. When `fn` is executed, any arguments passed to `queue` will be passed on to `fn`.  
 
 ```javascript
 var batch = new Batch();
@@ -46,7 +46,7 @@ qCar('Peugot');
 
 ### Known Issues
 
-* Jobs added with the `queue` function returned by `Batch.prototype.add(fn)` will execute in the global context, not the context of the Batch object. Inside `fn`, `this` will refer to the global object. To work around this, call the `queue` function returned by `Batch.prototype.add(fn)` in the context you would like `fn` to have:
+* Jobs added with the `queue` function returned by `Batch.prototype.add(fn)` will execute in the global context, not the context of the Batch object. Inside `fn`, `this` will refer to the global object. As a workaround, call the `queue` function returned by `Batch.prototype.add(fn)` with the context you would like `fn` to have:
 
 ```javascript
 var batch = new Batch();
@@ -62,10 +62,12 @@ var isItCool = function() {
 
 var qCool = batch.add(isItCool);
 
+//call queue function in global context
 qCool();
 
 // => Nope, this ain't cool.
 
+//call queue function in context of coolItem
 qCool.call(coolItem);
 
 // => Yep, this is cool.
